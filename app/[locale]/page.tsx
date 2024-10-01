@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 
 const HomePage = () => {
   const session = auth();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const t = useTranslations("HomePage");
   if (!session) {
     return redirect("/sign-in");
