@@ -1,0 +1,9 @@
+{
+  "HomePage": {
+    "title": "hallo dunia",
+    "about": "Go to the about page"
+  },
+  "SelectLanguage": {
+    "switchLocale": "{locale, select, id {🇮🇩 Indonesia} en {🇺🇸 English} other {Unknown}}"
+  }
+}
