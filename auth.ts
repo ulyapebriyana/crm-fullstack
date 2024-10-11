@@ -19,6 +19,17 @@ export const config = {
     // Seconds - How long until an idle session expires and is no longer valid.
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  callbacks: {
+    session: ({ session, token }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub,
+        },
+      }
+    },
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.AUTH_GOOGLE_ID as string,

@@ -1,13 +1,12 @@
-
 import React from "react";
 import SingleSignOn from "./../components/sso";
 import { Link, redirect } from "@/i18n/routing";
 import { auth } from "@/auth";
 
-const SignUpPage = async() => {
+const SignUpPage = async () => {
   const session = await auth();
   if (session) {
-    return redirect("/");
+    return redirect("/customers");
   }
   return (
     <div className="flex flex-col gap-5 md:p-10">

@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 const SignInPage = async () => {
   const session = await auth();
   if (session) {
-    return redirect("/");
+    return redirect("/customers");
   }
   return (
     <div className="flex flex-col gap-5 md:p-10">

@@ -1,0 +1,20 @@
+model Customer {
+  id          String   @id @default(cuid())
+  userId      String
+  firstName   String
+  lastName    String?
+  email       String
+  phoneNumber String?
+  country     String?
+  language    String?
+  company     String?
+  address     String?
+  city        String?
+  province    String?
+  zipCode     Int?
+  note        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

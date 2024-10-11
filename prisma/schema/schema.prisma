@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder", "fullTextSearch"]
 }
 
 datasource db {
@@ -21,6 +22,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  customers     Customer[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
 
@@ -82,3 +84,4 @@ model Authenticator {
 
   @@id([userId, credentialID])
 }
+

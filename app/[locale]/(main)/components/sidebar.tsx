@@ -3,7 +3,7 @@
 import { Icon } from "@iconify-icon/react";
 import Image from "next/image";
 import Logo from "@/assets/Login/Logo.png";
-import { Link } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 
 const menu = [
   {
@@ -39,6 +39,8 @@ const menu = [
 ];
 
 const Sidebar = () => {
+  const pathname = usePathname();
+
   return (
     <div className="flex h-screen flex-col bg-[#F9F9F9]">
       {/* Header Section */}
@@ -50,28 +52,32 @@ const Sidebar = () => {
       {/* Menu Section */}
       <div className="flex flex-1 flex-col justify-between p-5">
         <div className="flex flex-col space-y-2 overflow-y-auto">
-          {menu.map((data, index) => (
-            <Link
-              href={data.href}
-              className="group flex cursor-pointer items-center gap-3 rounded-lg p-3 font-medium hover:bg-white hover:shadow-sm"
-              key={index}
-            >
-              <Icon
-                icon={data.icon}
-                className="text-xl group-hover:text-primary"
-              />
-              <div className="">{data.name}</div>
-            </Link>
-          ))}
+          {menu.map((data, index) => {
+            const isActive = pathname.startsWith(data.href);
+
+            return (
+              <Link
+                href={data.href}
+                className={`group flex cursor-pointer items-center gap-3 rounded-lg p-3 font-medium hover:bg-white hover:shadow-sm ${isActive ? "bg-white shadow-sm" : ""}`}
+                key={index}
+              >
+                <Icon
+                  icon={data.icon}
+                  className={`text-xl ${isActive ? "text-primary" : "group-hover:text-primary"}`}
+                />
+                <div>{data.name}</div>
+              </Link>
+            );
+          })}
         </div>
 
         {/* Footer Section (Settings) */}
         <Link
           href={"/settings"}
-          className="flex cursor-pointer items-center gap-3 p-3 font-medium hover:text-primary"
+          className={`flex cursor-pointer items-center gap-3 p-3 font-medium hover:text-primary ${pathname.startsWith("/settings") ? "text-primary" : ""}`}
         >
           <Icon icon="lsicon:setting-outline" className="text-xl" />
-          <span className="">Settings</span>
+          <span>Settings</span>
         </Link>
       </div>
     </div>
