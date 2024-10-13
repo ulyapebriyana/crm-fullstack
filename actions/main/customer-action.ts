@@ -128,3 +128,76 @@ export const deleteCustomer = async ({ id }: { id: string }) => {
     }
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const importCustomers = async ({ data }: { data: any }) => {
+  try {
+    const jsonData = JSON.parse(data)
+
+    const session = await auth()
+    if (!session?.user.id) {
+      throw new Error('User ID is missing')
+    }
+
+    for (const json of jsonData) {
+      const customer = await prisma.customer.findFirst({
+        where: {
+          email: json["Email"],
+          userId: session?.user.id
+        }
+      })
+      if (customer) {
+        await prisma.customer.update({
+          where: {
+            id: customer.id
+          },
+          data: {
+            firstName: json["First Name"] || "",
+            lastName: json["Last Name"] || "",
+            phoneNumber: json["Phone Number"].toString() || "",
+            country: json["Country"] || "",
+            language: json["Language"] || "",
+            company: json["Company"] || "",
+            address: json["Address"] || "",
+            city: json["City"] || "",
+            province: json["Province"] || "",
+            zipCode: json["Zip Code"].toString() || "",
+            note: json["Note"] || ""
+          }
+        })
+      } else {
+        await prisma.customer.create({
+          data: {
+            email: json["Email"] || "",
+            firstName: json["First Name"] || "",
+            lastName: json["Last Name"] || "",
+            phoneNumber: json["Phone Number"].toString() || "",
+            country: json["Country"] || "",
+            language: json["Language"] || "",
+            company: json["Company"] || "",
+            address: json["Address"] || "",
+            city: json["City"] || "",
+            province: json["Province"] || "",
+            note: json["Note"] || "",
+            zipCode: json["Zip Code"].toString() || "",
+            userId: session?.user.id
+          }
+        })
+      }
+    }
+
+    revalidatePath("/customers")
+
+    return {
+      success: true,
+      message: "Imported data successfully!"
+    }
+
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      message: 'Internal server error'
+    }
+  }
+}
