@@ -15,7 +15,7 @@ export const customerSchema = z.object({
   address: z.string(),
   city: z.string(),
   province: z.string(),
-  zipCode: z.coerce.number({ message: "Zip code must be a number." }),
+  zipCode: z.string(),
   note: z.string(),
 });
 

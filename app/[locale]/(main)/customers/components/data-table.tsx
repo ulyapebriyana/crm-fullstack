@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/table";
 import * as React from "react";
 import SearchInput from "@/components/search";
+import { Icon } from "@iconify-icon/react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -78,7 +79,10 @@ export function DataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns
+              <div className="flex items-center gap-2">
+                <Icon icon={"hugeicons:filter-horizontal"} />
+                View
+              </div>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

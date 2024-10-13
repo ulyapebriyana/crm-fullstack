@@ -3,7 +3,6 @@
 import { auth } from "@/auth"
 import { prisma } from "@/prisma"
 import { CustomerSchema, CustomerWithFullname } from "@/schemas/customer-schema"
-import { Customer } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
 export const getCustomers = async ({ search }: { search?: string }): Promise<CustomerWithFullname[]> => {
@@ -14,6 +13,9 @@ export const getCustomers = async ({ search }: { search?: string }): Promise<Cus
       throw new Error('User ID is missing')
     }
     const data = await prisma.customer.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
       where: {
         userId: session?.user.id,
         ...(search && {
@@ -37,7 +39,7 @@ export const getCustomers = async ({ search }: { search?: string }): Promise<Cus
   }
 }
 
-export const getCustomer = async ({ id }: { id: string }): Promise<Customer | null> => {
+export const getCustomer = async ({ id }: { id: string }) => {
   try {
     const data = await prisma.customer.findUnique({
       where: {
@@ -45,15 +47,17 @@ export const getCustomer = async ({ id }: { id: string }): Promise<Customer | nu
       },
     });
 
-    return data || null;
+    if (!data) return { success: false, message: 'Customer not found' }
+
+    return { success: true, message: 'Get customer success', data }
 
   } catch (error) {
     console.log(error);
-    return null;
+    return { success: false, message: 'Internal Server Error' }
   }
 }
 
-export const createCustomer = async (values: CustomerSchema) => {
+export const upsertCustomer = async (values: CustomerSchema, id?: string) => {
   try {
     const session = await auth()
 
@@ -64,21 +68,37 @@ export const createCustomer = async (values: CustomerSchema) => {
     const customer = await prisma.customer.findFirst({
       where: {
         userId: session?.user.id,
-        email: values.email
+        email: values.email,
+        id: {
+          not: id
+        }
       }
     })
 
-    await prisma.customer.create({
-      data: {
+    if (customer) {
+      return {
+        success: false,
+        message: 'Customer already exist!',
+      }
+    }
+
+    const response = await prisma.customer.upsert({
+      where: { id: id || crypto.randomUUID() },
+      update: {
+        ...values,
+      },
+      create: {
         ...values,
         userId: session?.user.id
       },
     })
 
+    revalidatePath(`/customers/update/${response.id}`)
+
     return {
       success: true,
-      message: 'Customer created successfully!',
-      data: customer
+      message: `Customer ${id ? "updated" : "created"} successfully!`,
+      data: response
     }
 
   } catch (error) {

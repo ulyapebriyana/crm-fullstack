@@ -20,38 +20,41 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { createCustomer } from "@/actions/main/customer-action";
+import { upsertCustomer } from "@/actions/main/customer-action";
 import { CustomerSchema, customerSchema } from "@/schemas/customer-schema";
 import { useToast } from "@/hooks/use-toast";
 import { useTransition } from "react";
 import { useRouter } from "@/i18n/routing";
 
-const FormCreate = () => {
+const FormUpsert = ({ data, id }: { data?: CustomerSchema; id?: string }) => {
   const { toast } = useToast();
   const router = useRouter();
 
+  const defaultValues: CustomerSchema = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    country: "indonesia",
+    language: "indonesia",
+    company: "",
+    address: "",
+    city: "",
+    province: "",
+    zipCode: "",
+    note: "",
+  };
+
   const [isPending, startTransition] = useTransition();
+
   const form = useForm<CustomerSchema>({
     resolver: zodResolver(customerSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      country: "indonesia",
-      language: "indonesia",
-      company: "",
-      address: "",
-      city: "",
-      province: "",
-      zipCode: 0,
-      note: "",
-    },
+    defaultValues: data ? data : defaultValues,
   });
 
   async function onSubmit(values: CustomerSchema) {
     startTransition(async () => {
-      const response = await createCustomer({ ...values });
+      const response = await upsertCustomer({ ...values }, id);
       if (response.success) {
         toast({
           title: "Success",
@@ -68,6 +71,7 @@ const FormCreate = () => {
       }
     });
   }
+
   return (
     <Form {...form}>
       <form
@@ -272,4 +276,4 @@ const FormCreate = () => {
   );
 };
 
-export default FormCreate;
+export default FormUpsert;

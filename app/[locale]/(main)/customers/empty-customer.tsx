@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 const EmptyCustomer = () => {
   return (
     <div className="flex h-[600px] items-center justify-center rounded-lg border">
-      <div className="flex max-w-sm flex-col items-center justify-center gap-5">
+      <div className="flex max-w-sm flex-col items-center justify-center gap-5 p-3">
         <Image src={EmptyImage} alt="empty" height={150} width={150} />
-        <h1 className="text-lg font-bold">
+        <h1 className="text-center text-lg font-bold md:text-start">
           Everything customers-related in one place
         </h1>
         <p className="text-center">

@@ -1,6 +1,5 @@
 import BackButton from "@/components/back-button";
-
-import FormCreate from "./form-create";
+import FormUpsert from "../components/form-upsert";
 
 const CreateCustomer = async () => {
   return (
@@ -11,7 +10,7 @@ const CreateCustomer = async () => {
           <span className="text-2xl font-bold">Add Customer</span>
         </div>
       </div>
-      <FormCreate />
+      <FormUpsert />
     </div>
   );
 };

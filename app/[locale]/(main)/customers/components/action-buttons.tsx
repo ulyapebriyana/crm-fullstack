@@ -10,12 +10,15 @@ const ActionButton = ({ customer }: { customer: CustomerWithFullname }) => {
   return (
     <div className="flex items-center space-x-2">
       <Button
+        asChild
         variant="ghost"
         size="icon"
-        onClick={() => console.log("Update", customer)}
+        onClick={() => router.push(`/customers/update/${customer.id}`)}
       >
-        <Icon icon="mynaui:pencil" className="text-xl text-destructive" />
-        <span className="sr-only">Update</span>
+        <div className="">
+          <Icon icon="mynaui:pencil" className="text-xl text-destructive" />
+          <span className="sr-only">Update</span>
+        </div>
       </Button>
       <DeleteButton id={customer.id} />
       <Button

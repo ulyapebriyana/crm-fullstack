@@ -5,7 +5,7 @@ import Image from "next/image";
 import EmptyOrder from "@/assets/Customers/empty-order.png";
 
 const CustomerDetail = async ({ params }: { params: { id: string } }) => {
-  const employee = await getCustomer({ id: params.id });
+  const { data: employee } = await getCustomer({ id: params.id });
   // console.log(employee);
 
   return (
