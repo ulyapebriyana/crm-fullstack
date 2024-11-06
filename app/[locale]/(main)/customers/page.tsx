@@ -2,18 +2,22 @@ import React from "react";
 import EmptyCustomer from "./empty-customer";
 import Title from "../components/title";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "./components/data-table";
-import { columns } from "./components/columns";
-import { getCustomers } from "@/actions/main/customer-action";
+import { countCustomer, getCustomers } from "@/actions/main/customer-action";
 import { Link } from "@/i18n/routing";
 import ImportDropzoneButton from "./components/import-dropzone-button";
+import CustomerTable from "./components/customer-table";
 
 const CustomerPage = async ({
   searchParams,
 }: {
-  searchParams?: { search?: string };
+  searchParams?: { search?: string; page?: string; limit?: string };
 }) => {
-  const customers = await getCustomers({ search: searchParams?.search });
+  const customers = await getCustomers({
+    search: searchParams?.search,
+    page: +(searchParams?.page || 1),
+    limit: +(searchParams?.limit || 10),
+  });
+  const countCustomers = await countCustomer();
 
   return (
     <div className="flex flex-col gap-8 p-8">
@@ -26,10 +30,13 @@ const CustomerPage = async ({
           </Button>
         </div>
       </div>
-      {customers.length < 1 ? (
+      {(countCustomers?.data ?? 0) < 1 ? (
         <EmptyCustomer />
       ) : (
-        <DataTable columns={columns} data={customers} />
+        <CustomerTable
+          data={customers?.data.result}
+          meta={customers?.data.meta}
+        />
       )}
     </div>
   );

@@ -1,41 +1,75 @@
 'use server'
 
 import { auth } from "@/auth"
+import { createApiResponse } from "@/helpers/response-data"
 import { prisma } from "@/prisma"
-import { CustomerSchema, CustomerWithFullname } from "@/schemas/customer-schema"
+import { CustomerSchema } from "@/schemas/customer-schema"
+import { Prisma } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
-export const getCustomers = async ({ search }: { search?: string }): Promise<CustomerWithFullname[]> => {
+export const getCustomers = async ({ search, page = 1, limit = 10 }: { search?: string, page?: number, limit?: number }) => {
+  const offset = (page - 1) * limit
   try {
     const session = await auth()
 
     if (!session?.user.id) {
       throw new Error('User ID is missing')
     }
-    const data = await prisma.customer.findMany({
-      orderBy: {
-        createdAt: 'desc',
+
+    const queryFilter: Prisma.CustomerWhereInput = {
+      userId: session.user.id,
+      ...(search && {
+        email: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      }),
+    }
+
+    const [totalCount, data] = await Promise.all([
+      prisma.customer.count({ where: queryFilter }),
+      prisma.customer.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+        where: queryFilter,
+        skip: offset,
+        take: limit,
+      }),
+    ])
+
+    return createApiResponse(true, 'Create data success', {
+      meta: {
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        currentPage: page,
       },
+      result: data,
+    })
+  } catch (error) {
+    console.log(error)
+    createApiResponse(false, 'Internal Server Error', {})
+  }
+}
+
+export const countCustomer = async () => {
+  const session = await auth()
+
+  if (!session?.user.id) {
+    throw new Error('User ID is missing')
+  }
+  try {
+    const data = await prisma.customer.count({
       where: {
         userId: session?.user.id,
-        ...(search && {
-          email: {
-            contains: search,
-            mode: 'insensitive',
-          }
-        })
-      }
-    })
-    const customersWithFullname = data.map((customer) => ({
-      ...customer,
-      fullName: `${customer.firstName} ${customer.lastName || ''}`.trim(),
-    }))
+      },
+    });
 
-    return customersWithFullname || []
+    return { success: true, message: 'Get customer success', data }
 
   } catch (error) {
     console.log(error);
-    return []
+    return { success: false, message: 'Internal Server Error' }
   }
 }
 

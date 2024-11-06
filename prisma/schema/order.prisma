@@ -1,0 +1,22 @@
+model Order {
+  id            String         @id @default(cuid())
+  orderId       String?
+  userId        String?
+  customerId    String?
+  total         Decimal?       @db.Decimal(13, 3)
+  note          String?
+  paymentStatus PaymentStatus? @default(PENDING)
+  isDraft       Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  products ProductsOnOrders[]
+  user     User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customer Customer?          @relation(fields: [customerId], references: [id], onDelete: Cascade)
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELLED
+}

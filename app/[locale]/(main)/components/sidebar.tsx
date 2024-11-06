@@ -40,7 +40,6 @@ const menu = [
 
 const Sidebar = () => {
   const pathname = usePathname();
-
   return (
     <div className="flex h-screen flex-col bg-[#F9F9F9]">
       {/* Header Section */}

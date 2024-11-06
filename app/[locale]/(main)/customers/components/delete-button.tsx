@@ -21,8 +21,6 @@ const DeleteButton = ({ id }: { id: string }) => {
   const onDelete = async () => {
     const response = await deleteCustomer({ id });
     if (response.success) {
-      console.log("jsjsjs");
-
       toast({
         title: "Success",
         description: response.message,

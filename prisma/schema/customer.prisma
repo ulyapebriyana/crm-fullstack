@@ -13,6 +13,7 @@ model Customer {
   province    String
   zipCode     String
   note        String
+  orders      Order[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

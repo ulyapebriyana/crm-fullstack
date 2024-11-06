@@ -1,0 +1,10 @@
+model ProductsOnOrders {
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  String // relation scalar field (used in the `@relation` attribute above)
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    String // relation scalar field (used in the `@relation` attribute above)
+  quantity   Int
+  assignedAt DateTime @default(now())
+
+  @@id([productId, orderId])
+}

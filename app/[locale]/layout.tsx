@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+import "../globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Toaster } from "@/components/ui/toaster";
-import NextAuthProvider from "../../providers/next-auth-provider";
 import TanstackQueryProvider from "../../providers/tanstack-query-provider";
 
 const geistSans = localFont({
@@ -37,9 +36,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
-          <NextAuthProvider>
-            <TanstackQueryProvider>{children}</TanstackQueryProvider>
-          </NextAuthProvider>
+          <TanstackQueryProvider>{children}</TanstackQueryProvider>
         </NextIntlClientProvider>
         <Toaster />
       </body>

@@ -1,6 +1,8 @@
 import Image from "next/image";
 import EmptyImage from "@/assets/Customers/empty.png";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/routing";
+import ImportDropzoneButton from "./components/import-dropzone-button";
 
 const EmptyCustomer = () => {
   return (
@@ -15,8 +17,10 @@ const EmptyCustomer = () => {
           customer into segments
         </p>
         <div className="flex gap-4">
-          <Button variant={"outline"}>Import Customer</Button>
-          <Button>Add Customer</Button>
+          <ImportDropzoneButton />
+          <Button asChild>
+            <Link href={"/customers/create"}>Add Customer</Link>
+          </Button>
         </div>
       </div>
     </div>
