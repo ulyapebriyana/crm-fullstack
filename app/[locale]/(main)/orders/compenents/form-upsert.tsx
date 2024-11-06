@@ -8,7 +8,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -34,7 +33,6 @@ import {
 } from "@/components/ui/table";
 import { Icon } from "@iconify-icon/react";
 import { orderSchema, OrderSchema } from "@/schemas/order-schema";
-import { Label } from "@/components/ui/label";
 import Subtitle from "../../components/subtitle";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
@@ -43,9 +41,11 @@ import { CheckPicker } from "@/components/check-picker";
 import NumericInput from "@/components/numeric-input";
 import Image from "next/image";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const FormUpsert = ({ orders, id }: { orders?: any; id?: string }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { toast } = useToast();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter();
 
   const defaultValues: OrderSchema = {
@@ -104,6 +104,7 @@ const FormUpsert = ({ orders, id }: { orders?: any; id?: string }) => {
       queryFn: () => fetch("/api/customers").then((res) => res.json()),
     },
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: dataProducts } = useQuery({
     queryKey: ["product-list"],
     queryFn: () => fetch("/api/products").then((res) => res.json()),

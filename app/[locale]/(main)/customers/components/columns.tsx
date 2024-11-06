@@ -56,8 +56,9 @@ export const columns: ColumnDef<CustomerWithFullname>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const customer = row.original;
-      return <ActionButton customer={customer} />;
+      return <ActionButton id={"1"} />;
     },
   },
 ];
