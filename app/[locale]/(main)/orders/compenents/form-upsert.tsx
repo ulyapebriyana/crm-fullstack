@@ -19,10 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { useRouter } from "@/i18n/routing";
-// import { Checkbox } from "@/components/ui/checkbox";
-// import NumericInput from "@/components/numeric-input";;
 import {
   Table,
   TableBody,
@@ -31,21 +29,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Icon } from "@iconify-icon/react";
 import { orderSchema, OrderSchema } from "@/schemas/order-schema";
 import Subtitle from "../../components/subtitle";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
-import ImageNomic from "@/assets/Customers/empty-order.png";
-import { CheckPicker } from "@/components/check-picker";
 import NumericInput from "@/components/numeric-input";
 import Image from "next/image";
+import SelectPicker from "./select-picker";
+import { formatCurrency } from "@/helpers/format-currency";
+import { upsertOrder } from "@/actions/main/order-action";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 const FormUpsert = ({ orders, id }: { orders?: any; id?: string }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { toast } = useToast();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter();
 
   const defaultValues: OrderSchema = {
@@ -58,45 +53,10 @@ const FormUpsert = ({ orders, id }: { orders?: any; id?: string }) => {
 
   const [isPending, startTransition] = useTransition();
 
-  // const parseDataToDefaultValues = (data: Product): ProductSchema => {
-  //   return {
-  //     ...data,
-  //     price: Number(data.price),
-  //     compareAtPrice: Number(data.compareAtPrice),
-  //     costPerItem: Number(data.costPerItem),
-  //     profit: Number(data.profit),
-  //     margin: Number(data.margin),
-  //     quantity: Number(data.quantity),
-  //   };
-  // };
-
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
     defaultValues: defaultValues,
   });
-
-  async function onSubmit(values: OrderSchema) {
-    startTransition(async () => {
-      console.log(values);
-
-      // const response = await upsertProduct({ ...values }, id);
-
-      // if (response.success) {
-      //   toast({
-      //     title: "Success",
-      //     description: response.message,
-      //     variant: "success",
-      //   });
-      //   router.push("/products");
-      // } else {
-      //   toast({
-      //     title: "Failed",
-      //     description: response.message,
-      //     variant: "destructive",
-      //   });
-      // }
-    });
-  }
 
   const { data: customerOptions, isPending: pendingCustomerOptions } = useQuery(
     {
@@ -105,18 +65,49 @@ const FormUpsert = ({ orders, id }: { orders?: any; id?: string }) => {
     },
   );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: dataProducts } = useQuery({
+  const { data: dataProducts, isPending: pendingProductOptions } = useQuery({
     queryKey: ["product-list"],
     queryFn: () => fetch("/api/products").then((res) => res.json()),
   });
 
-  const options = [
-    { value: "apple", label: "Apple" },
-    { value: "banana", label: "Banana" },
-    { value: "cherry", label: "Cherry" },
-    { value: "date", label: "Date" },
-    { value: "elderberry", label: "Elderberry" },
-  ];
+  const handleProductSelect = (selectedOptions: { value: string }[]) => {
+    const updatedProducts = selectedOptions.map((option) => ({
+      id: option.value,
+      quantity: 0,
+    }));
+    form.setValue("products", updatedProducts);
+  };
+
+  const watchProducts = form.watch("products");
+
+  const totalOrder = watchProducts.reduce((acc, value) => {
+    const product = dataProducts?.data?.find(
+      (product: any) => product.id === value.id,
+    );
+    const price = product ? product.price : 0;
+    return acc + price * value.quantity;
+  }, 0);
+
+  async function onSubmit(values: OrderSchema) {
+    startTransition(async () => {
+      
+      const response = await upsertOrder({ ...values, total: totalOrder }, id);
+      if (response.success) {
+        toast({
+          title: "Success",
+          description: response.message,
+          variant: "success",
+        });
+        router.push("/products");
+      } else {
+        toast({
+          title: "Failed",
+          description: response.message,
+          variant: "destructive",
+        });
+      }
+    });
+  }
 
   return (
     <Form {...form}>
@@ -130,74 +121,103 @@ const FormUpsert = ({ orders, id }: { orders?: any; id?: string }) => {
               <div className="flex flex-col gap-7">
                 <Subtitle name={"Products"} />
                 <div className="flex gap-4">
-                  <CheckPicker />
+                  {pendingProductOptions ? (
+                    <div>Loading...</div>
+                  ) : (
+                    <SelectPicker
+                      options={dataProducts?.data?.map((value: any) => ({
+                        label: value.title,
+                        value: value.id,
+                      }))}
+                      onSelectionChange={handleProductSelect}
+                    />
+                  )}
                 </div>
                 <div className="overflow-x-auto">
                   <Table className="table-auto">
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[700px]">Image</TableHead>
+                        <TableHead className="w-[500px]">Image</TableHead>
                         <TableHead className="w-[700px]">Product</TableHead>
-                        <TableHead className="w-[150px]">Quantity</TableHead>
+                        <TableHead className="w-[200px] text-end">
+                          Price
+                        </TableHead>
+                        <TableHead className="w-[100px] text-end">
+                          Quantity
+                        </TableHead>
                         <TableHead className="w-[150px] text-right">
                           Total
                         </TableHead>
-                        <TableHead className="w-[50px] text-center"></TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {options.map(
-                        (value: { value: string }, index: number) => (
-                          <TableRow key={value.value}>
-                            <TableCell className="text-right">
-                              <Image
-                                src={ImageNomic}
-                                alt="image.png"
-                                height={120}
-                                width={120}
-                              />
-                            </TableCell>
-                            <TableCell className="font-medium">
-                              <input
-                                type="hidden"
-                                {...form.register(`products.${index}.id`)}
-                              />
-                              <div className="flex items-center gap-4">
-                                <p className="font-bold capitalize md:text-lg">
-                                  Macbook pro M1
-                                </p>
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-center">
-                              <FormField
-                                control={form.control}
-                                name={`products.${index}.quantity`}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormControl>
-                                      <NumericInput
-                                        field={field}
-                                        placeholder="0"
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </TableCell>
-                            <TableCell className="text-right">Rp. 0</TableCell>
-                            <TableCell className="text-end">
-                              <Icon
-                                icon="mdi:trash"
-                                className="cursor-pointer text-xl text-destructive"
-                                onClick={() => {
-                                  console.log("delete");
-                                }}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ),
-                      )}
+                      {watchProducts.map((value: any, index: number) => (
+                        <TableRow key={index}>
+                          <TableCell className="text-right">
+                            <Image
+                              src={
+                                dataProducts.data.find(
+                                  (data: any) => data.id === value.id,
+                                ).imageUrl
+                              }
+                              priority
+                              alt="image.png"
+                              height={70}
+                              width={70}
+                              style={{ width: "auto", height: "auto" }}
+                            />
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            <input
+                              type="hidden"
+                              {...form.register(`products.${index}.id`)}
+                            />
+                            <div className="flex items-center gap-4">
+                              <p className="md:text-lg">
+                                {
+                                  dataProducts.data.find(
+                                    (data: any) => data.id === value.id,
+                                  ).title
+                                }
+                              </p>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-end font-medium">
+                            <h3 className="md:text-md text-end">
+                              {formatCurrency(
+                                dataProducts.data.find(
+                                  (data: any) => data.id === value.id,
+                                ).price,
+                              )}
+                            </h3>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <FormField
+                              control={form.control}
+                              name={`products.${index}.quantity`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <NumericInput
+                                      field={field}
+                                      placeholder="0"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {formatCurrency(
+                              dataProducts.data.find(
+                                (data: any) => data.id === value.id,
+                              ).price *
+                                form.watch(`products.${index}.quantity`),
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </div>
@@ -209,24 +229,24 @@ const FormUpsert = ({ orders, id }: { orders?: any; id?: string }) => {
                 <div className="flex flex-col gap-3">
                   <div className="flex justify-between">
                     <p className="">Subtotal</p>
-                    <p className="text-end">Rp. 20.000</p>
+                    <p className="text-end">{formatCurrency(totalOrder)}</p>
                   </div>
                   <div className="flex justify-between">
                     <p className="">Add discount</p>
-                    <p className="text-end">Rp. 20.000</p>
+                    <p className="text-end">Rp. 0</p>
                   </div>
                   <div className="flex justify-between">
                     <p className="">Add shipping or delivery</p>
-                    <p className="text-end">Rp. 20.000</p>
+                    <p className="text-end">Rp. 0</p>
                   </div>
                   <div className="flex justify-between">
                     <p className="">Estimated tax</p>
-                    <p className="text-end">Rp. 20.000</p>
+                    <p className="text-end">Rp. 0</p>
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-bold">Estimated tax</p>
-                  <p className="font-bold">Rp. 0</p>
+                  <p className="font-bold">Total</p>
+                  <p className="font-bold">{formatCurrency(totalOrder)}</p>
                 </div>
               </div>
               <div className="border-t bg-secondary p-5">
@@ -280,7 +300,6 @@ const FormUpsert = ({ orders, id }: { orders?: any; id?: string }) => {
                               loading...
                             </SelectItem>
                           ) : (
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             customerOptions.data?.map((customer: any) => (
                               <SelectItem
                                 value={customer.value}

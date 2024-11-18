@@ -56,8 +56,9 @@ const ProductTable = ({ data, meta }: { data: any; meta: MetaData }) => {
                     <Image
                       src={product.imageUrl}
                       alt="image.img"
-                      width={30}
-                      height={30}
+                      width={60}
+                      height={60}
+                      style={{ width: "auto", height: "auto" }}
                     />
                   </TableCell>
                   <TableCell className="min-w-28">{product.title}</TableCell>
