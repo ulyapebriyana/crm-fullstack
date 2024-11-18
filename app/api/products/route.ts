@@ -3,6 +3,7 @@ import { createApiResponse } from '@/helpers/response-data'
 import { prisma } from '@/prisma'
 import { NextResponse, type NextRequest } from 'next/server'
 
+export const dynamic = 'force-dynamic';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(request: NextRequest) {
   try {

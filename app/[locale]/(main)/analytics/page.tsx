@@ -1,5 +1,4 @@
 import React from "react";
-import Maintenance from "../components/maintenance";
 import Title from "../components/title";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";

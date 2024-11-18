@@ -103,7 +103,7 @@ const HomeCharts = () => {
                   <Icon
                     icon={
                       storeOptions.find((value) => value.id === activeOptionId)
-                        ?.icon!
+                        ?.icon as string
                     }
                   />
                 </div>
@@ -120,7 +120,7 @@ const HomeCharts = () => {
                       ? formatCurrency(
                           storeOptions.find(
                             (value) => value.id === activeOptionId,
-                          )?.numberHeader!,
+                          )?.numberHeader as number,
                         )
                       : storeOptions.find(
                             (value) => value.id === activeOptionId,
@@ -128,7 +128,7 @@ const HomeCharts = () => {
                         ? formatPercentage(
                             storeOptions.find(
                               (value) => value.id === activeOptionId,
-                            )?.numberHeader!,
+                            )?.numberHeader as number,
                           )
                         : storeOptions.find(
                             (value) => value.id === activeOptionId,
