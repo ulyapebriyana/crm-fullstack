@@ -1,7 +1,7 @@
 model ProductsOnOrders {
-  product    Product  @relation(fields: [productId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId  String // relation scalar field (used in the `@relation` attribute above)
-  order      Order    @relation(fields: [orderId], references: [id])
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId    String // relation scalar field (used in the `@relation` attribute above)
   quantity   Int
   assignedAt DateTime @default(now())

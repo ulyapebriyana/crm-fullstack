@@ -14,6 +14,7 @@ const nextConfig = {
       },
     ],
   },
+  experimental: { serverComponentsExternalPackages: ['@aws-sdk/s3-request-presigner', '@aws-sdk/client-s3'] }
 };
 
 export default withNextIntl(nextConfig);

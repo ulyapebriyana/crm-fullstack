@@ -3,9 +3,9 @@ model Order {
   orderId       String?
   userId        String?
   customerId    String?
-  total         Decimal?       @db.Decimal(13, 3)
+  total         Decimal       @default(0.0) @db.Decimal(13, 3)
   note          String?
-  paymentStatus PaymentStatus? @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
   isDraft       Boolean        @default(false)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt

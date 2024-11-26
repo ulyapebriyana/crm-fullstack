@@ -13,11 +13,7 @@ export const config = {
     signIn: "/sign-in"
   },
   session: {
-    // Use JSON Web Tokens for session instead of database sessions.
     strategy: "jwt",
-
-    // Seconds - How long until an idle session expires and is no longer valid.
-    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     session: ({ session, token }) => {

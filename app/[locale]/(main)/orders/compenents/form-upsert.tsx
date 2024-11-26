@@ -92,7 +92,6 @@ const FormUpsert = ({ orders, id }: { orders?: any; id?: string }) => {
 
   async function onSubmit(values: OrderSchema) {
     startTransition(async () => {
-      
       const response = await upsertOrder({ ...values, total: totalOrder }, id);
       if (response.success) {
         toast({
@@ -100,7 +99,7 @@ const FormUpsert = ({ orders, id }: { orders?: any; id?: string }) => {
           description: response.message,
           variant: "success",
         });
-        router.push("/products");
+        router.push("/orders");
       } else {
         toast({
           title: "Failed",

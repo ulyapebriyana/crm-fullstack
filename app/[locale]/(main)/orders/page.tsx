@@ -4,13 +4,21 @@ import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import EmptyOrder from "./empty-order";
 import { File } from "lucide-react";
+import { countOrder, getOrders } from "@/actions/main/order-action";
+import OrderTable from "./compenents/order-table";
 
 const OrderPage = async ({
   searchParams,
 }: {
   searchParams?: { search?: string; page?: string; limit?: string };
 }) => {
-  console.log(searchParams);
+  const orderData = await getOrders({
+    search: searchParams?.search,
+    page: +(searchParams?.page || 1),
+    limit: +(searchParams?.limit || 10),
+  });
+
+  const countOrders = await countOrder();
 
   return (
     <div className="flex flex-col gap-8 p-8">
@@ -28,7 +36,14 @@ const OrderPage = async ({
           </Button>
         </div>
       </div>
-      <EmptyOrder />
+      {(countOrders?.data ?? 0) < 1 ? (
+        <EmptyOrder />
+      ) : (
+        <OrderTable
+          data={JSON.stringify(orderData?.data.result)}
+          meta={orderData?.data.meta}
+        />
+      )}
     </div>
   );
 };

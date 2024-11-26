@@ -2,9 +2,9 @@ import React from "react";
 import Title from "../components/title";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { Card } from "@/components/ui/card";
 import HomeCharts from "./components/home-charts";
-import { ArrowRight, Package } from "lucide-react";
+import { TopSellingProduct } from "./components/top-selling-products";
+import { PopularCategoryChart } from "./components/popular-category-chart";
 
 const MainHomePage = () => {
   return (
@@ -15,14 +15,14 @@ const MainHomePage = () => {
           <CalendarIcon className="mr-2" /> Last 30 day
         </Button>
       </div>
-      <div className="grid gap-5">
-        <HomeCharts />
-        <Card className="flex items-center justify-between p-6 gap-3">
-          <div className="flex items-center gap-3">
-            <Package /> <span>You have 1 order to fulfill</span>
-          </div>
-          <ArrowRight className="cursor-pointer hover:text-primary" />
-        </Card>
+      <div className="grid gap-5 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <HomeCharts />
+        </div>
+        <div className="col-span-1 grid gap-5">
+          <TopSellingProduct />
+          <PopularCategoryChart />
+        </div>
       </div>
     </div>
   );
