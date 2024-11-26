@@ -2,7 +2,7 @@ import Image from "next/image";
 import EmptyImage from "@/assets/Customers/empty.png";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import ImportDropzoneButton from "./components/import-dropzone-button";
+import ImportDropzoneButton from "./import-dropzone-button";
 
 const EmptyCustomer = () => {
   return (

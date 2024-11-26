@@ -2,7 +2,7 @@ import React from "react";
 import Title from "../components/title";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
-import EmptyOrder from "./empty-order";
+import EmptyOrder from "./compenents/empty-order";
 import { File } from "lucide-react";
 import { countOrder, getOrders } from "@/actions/main/order-action";
 import OrderTable from "./compenents/order-table";

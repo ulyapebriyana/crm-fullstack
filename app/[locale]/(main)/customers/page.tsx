@@ -1,11 +1,11 @@
 import React from "react";
-import EmptyCustomer from "./empty-customer";
 import Title from "../components/title";
 import { Button } from "@/components/ui/button";
 import { countCustomer, getCustomers } from "@/actions/main/customer-action";
 import { Link } from "@/i18n/routing";
 import ImportDropzoneButton from "./components/import-dropzone-button";
 import CustomerTable from "./components/customer-table";
+import EmptyCustomer from "./components/empty-customer";
 
 const CustomerPage = async ({
   searchParams,

@@ -5,7 +5,8 @@ import { routing } from './i18n/routing';
 
 const publicPages = [
   '/sign-in',
-  '/sign-up'
+  '/sign-up',
+  '/'
   // (/secret requires auth)
 ];
 

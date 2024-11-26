@@ -2,7 +2,7 @@ import React from "react";
 import Title from "../components/title";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
-import EmptyProduct from "./empty-product";
+import EmptyProduct from "./components/empty-product";
 import { countProduct, getProducts } from "@/actions/main/product-action";
 import ProductTable from "./components/product-table";
 

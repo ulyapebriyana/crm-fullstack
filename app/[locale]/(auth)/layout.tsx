@@ -3,8 +3,14 @@ import React from "react";
 import Logo from "@/assets/Login/Logo.png";
 import { CarouselPlugin } from "./components/carousel";
 import SelectLanguage from "./components/language";
+import { auth } from "@/auth";
+import { redirect } from "@/i18n/routing";
 
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
+  const session = await auth();
+  if (session) {
+    return redirect("/home");
+  }
   return (
     <section className="container mx-auto flex h-screen w-full">
       <div className="flex h-full w-full flex-col justify-between p-3">
