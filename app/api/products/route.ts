@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    return NextResponse.json(createApiResponse(false, 'Ok', products), { status: 200 })
+    return NextResponse.json(createApiResponse(true, 'Ok', products), { status: 200 })
   } catch (error) {
     console.log(error);
     return NextResponse.json(createApiResponse(false, 'Internal server error', {}), { status: 500 })

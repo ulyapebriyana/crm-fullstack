@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     })
 
     const result = customers.map(customer => ({ fullName: `${customer.firstName} ${customer.lastName}`, value: customer.id }))
-    return NextResponse.json(createApiResponse(false, 'Ok', result), { status: 200 })
+    return NextResponse.json(createApiResponse(true, 'Ok', result), { status: 200 })
   } catch (error) {
     console.log(error);
     return NextResponse.json(createApiResponse(false, 'Internal server error', {}), { status: 500 })

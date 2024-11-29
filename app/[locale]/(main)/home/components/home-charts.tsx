@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import React, { useState } from "react";
-import OnlineStoreSessionChart from "./online-store-session-chart";
+// import OnlineStoreSessionChart from "./online-store-session-chart";
 import ConversionRateChart from "./conversion-rate-chart";
 import TotalOrderChart from "./total-order-chart";
 import TotalSalesChart from "./total-sales-chart";
@@ -22,17 +22,17 @@ const formatPercentage = (value: number): string => {
 };
 
 const HomeCharts = () => {
-  const [activeOptionId, setActiveOptionId] = useState(1);
+  const [activeOptionId, setActiveOptionId] = useState(2);
 
   const storeOptions = [
-    {
-      id: 1,
-      icon: "bx:store",
-      name: "Online store session",
-      numberHeader: 239,
-      type: "number",
-      components: <OnlineStoreSessionChart />,
-    },
+    // {
+    //   id: 1,
+    //   icon: "bx:store",
+    //   name: "Online store session",
+    //   numberHeader: 239,
+    //   type: "number",
+    //   components: <OnlineStoreSessionChart />,
+    // },
     {
       id: 2,
       icon: "hugeicons:coins-01",
@@ -67,7 +67,7 @@ const HomeCharts = () => {
     <Card>
       <CardHeader>
         {/* Grid for screens medium and above */}
-        <ul className="hidden grid-cols-4 gap-4 lg:grid">
+        <ul className="hidden grid-cols-3 gap-4 lg:grid">
           {storeOptions.map((data) => (
             <li
               key={data.id}
